@@ -53,13 +53,13 @@ Edit `config/loadbalancer.json`:
   "servers": [
     {
       "name": "server1",
-      "host": "localhost",
+      "host": "192.168.0.1",
       "port": "8080",
       "health": "/health"
     },
     {
       "name": "server2",
-      "host": "localhost",
+      "host": "192.168.0.1",
       "port": "8081",
       "health": "/health"
     }
