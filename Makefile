@@ -10,7 +10,7 @@ BUILD_DIR = build
 CONFIG_DIR = config
 
 # Files
-SOURCES = $(SRC_DIR)/main.cpp $(SRC_DIR)/loadbalancer.cpp $(SRC_DIR)/http.cpp $(SRC_DIR)/thread_pool.cpp
+SOURCES = $(SRC_DIR)/main.cpp $(SRC_DIR)/loadbalancer.cpp $(SRC_DIR)/thread_pool.cpp
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 TARGET = loadbalancer
 

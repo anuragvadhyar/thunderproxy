@@ -9,8 +9,8 @@
 #include <nlohmann/json.hpp>
 #include "backend.h"
 #include <set>
-#include <curl/curl.h>
-#include "http.h"
+// #include <curl/curl.h>
+// #include "http.h"
 #include "thread_pool.h"
 #include <unistd.h>
 #include <sys/socket.h>
@@ -46,6 +46,7 @@ class LoadBalancer {
         void start_load_balancer();
         void registerRoute();
         Backend * SelectHostToForwardto();
+        std::string handleGetRequest(const std::string& address, const unsigned int port, const std::string& path, int& statusCode);
 };
 
 #endif

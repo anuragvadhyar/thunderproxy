@@ -5,7 +5,7 @@
 
 struct Backend {
     const std::string address;
-    const std::string port;
+    const int port;
     const std::string name;
     const std::string health_endpoint;
     unsigned int is_healthy;
@@ -13,7 +13,7 @@ struct Backend {
     // Constructor to initialize const members
     Backend(const std::string& addr, const std::string& p, const std::string& n, 
             const std::string& health_endpoint, unsigned int healthy)
-        : address(addr), port(p), name(n), health_endpoint(health_endpoint), is_healthy(healthy)
+        : address(addr), port(std::stoi(p)), name(n), health_endpoint(health_endpoint), is_healthy(healthy)
     {
     }
 };

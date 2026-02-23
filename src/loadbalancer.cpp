@@ -52,7 +52,7 @@ void LoadBalancer::parseBackends()
 LoadBalancer::LoadBalancer(unsigned int port, const std::string config)
     : _port(port),
     _config_file(config),
-    clientHandler(3),
+    clientHandler(10),
     healthHandler(1),
     current_server(0),
     data(parseConfig()),
@@ -63,15 +63,21 @@ LoadBalancer::LoadBalancer(unsigned int port, const std::string config)
 
 void LoadBalancer::healthCheck(Backend &b)
 {
-    long statusCode;
-    std::string response = sendHttpRequest(b.address, b.port, statusCode, b.health_endpoint);
+    int statusCode;
+    std::string contentType;
+    std::string response = handleGetRequest(b.address, b.port, b.health_endpoint, statusCode);
     if (statusCode != 200)
     {
         if (b.is_healthy)
         {
             b.is_healthy--;
         }
-        std::cerr<<"Backend "<<b.address+":"+b.port<<" is down with status "<< statusCode<< '\n';
+        std::cerr << "Backend " << b.address << ":" << b.port << " is down with status " << statusCode << '\n';
+        return;
+    }
+    if(!b.is_healthy)
+    {
+        b.is_healthy = healthCount;
     }
 
 }
@@ -112,13 +118,38 @@ void LoadBalancer::registerRoute()
             res.set_content("No healthy backends available", "text/plain");
             return;
         }
-        long statusCode;
+        int statusCode;
         std::string path = req.path;  // Use actual requested path
-        std::string response = sendHttpRequest(b->address, b->port, statusCode, path);
+        std::string contentType;
+        std::string response = handleGetRequest(b->address, b->port, path, statusCode);
+        if (statusCode == 0)
+        {
+            res.status = 502;  // Bad Gateway
+            res.set_content("Backend server unavailable", "text/plain");
+            return;
+        }
         res.status = statusCode;
-        res.set_content(response, "text/html");
+        res.set_content(response, contentType);
     });
     return;
+}
+
+std::string LoadBalancer::handleGetRequest(const std::string& address, const unsigned int port, const std::string& path, int &statusCode)
+{
+    httplib::Client client(address, port);
+    client.set_read_timeout(5, 0);
+    client.set_connection_timeout(3, 0);
+    auto res = client.Get(path);
+    if(res)
+    {
+        statusCode = res->status;
+        return res->body;
+    }
+    else
+    {
+        statusCode = 0;
+        return "";
+    }
 }
 
 Backend * LoadBalancer::SelectHostToForwardto()
@@ -142,7 +173,6 @@ Backend * LoadBalancer::RoundRobin(size_t n)
         int temp{this->current_server};
         this->current_server = (this->current_server+1) % this->backends.size();
         pthread_mutex_unlock(&backends_mutex);
-        std::cout<<"using server "<<this->backends[temp].name<<'\n';
         return &this->backends[temp];
     }
     this->current_server = (this->current_server+1) % this->backends.size();
