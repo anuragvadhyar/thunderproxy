@@ -115,6 +115,13 @@ The load balancer will distribute requests across healthy backends using round-r
    - Response is returned to the client
 4. **Thread Safety**: Mutex protection for shared backend state
 
+## Testing
+
+Tested using simple self-implemented HTTP web server fully implemented in C(available on my GitHub).
+Ran 3 different instances on localhost:8080, localhost:8081, localhost:8082.
+ThunderProxy successfully sent and received periodic Health updates while also forwarded client requests
+to the backend servers, and forwarded responses back to the clients.
+
 ## Improvements
 1. Additional load balancing algorithms to be added
 ## License
