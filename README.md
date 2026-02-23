@@ -1,4 +1,4 @@
-# Load Balancer
+# thunderproxy
 
 A high-performance HTTP load balancer written in C++ with support for multiple backend servers and health checking.
 
