@@ -115,6 +115,8 @@ The load balancer will distribute requests across healthy backends using round-r
    - Response is returned to the client
 4. **Thread Safety**: Mutex protection for shared backend state
 
+## Improvements
+1. Additional load balancing algorithms to be added
 ## License
 
 MIT License
