@@ -1,0 +1,23 @@
+{
+  "servers": [
+    {
+      "name": "server1",
+      "host": "127.0.0.1",
+      "port": "8080",
+      "health": "/health"
+    },
+    {
+      "name": "server2",
+      "host": "127.0.0.1",
+      "port": "8082",
+      "health": "/health"
+    },
+    {
+      "name": "server3",
+      "host": "127.0.0.1",
+      "port": "8083",
+      "health": "/health"
+    }
+  ],
+  "policy": "round-robin"
+}
